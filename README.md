@@ -1,4 +1,4 @@
-# Autonomous Mobile Robotics - Bluetooth Control Branch
+# Autonomous Mobile Robotics - Bluetooth Control Approach
 
 This branch contains the modified codebase to control the Mecanum wheel robot strictly via an **HC-05 Bluetooth Module**. It also includes a modern, web-browser-based **XAMPP UI Controller**.
 
