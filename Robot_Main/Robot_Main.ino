@@ -1,6 +1,5 @@
 #include "MecanumCar.h"
 #include "ForkliftAndClamp.h"
-#include "MazeSolver.h"
 
 // --- Hardware Initialization for Arduino MEGA ---
 
@@ -16,83 +15,54 @@ Forklift myForklift(A0, A1, A2);
 // Clamp: (Servo_Pin, Open_Angle, Closed_Angle, Trig_Pin, Echo_Pin)
 Clamp myClamp(A6, 120, 10, 36, 37);
 
-// Maze Solver: (TrigF, EchoF, TrigL, EchoL, TrigR, EchoR, TrigB, EchoB, RobotPointer)
-
-MazeSolver myMazeSolver(26, 27, 28, 29, 30, 31, 32, 33, 
-                                0, 0, 0, 0, &myRobot);
-
-// --- Manual Movement Helpers (by cm) ---
-// Calibration factor (adjust based on real-world testing)
-// e.g., if the robot moves 20cm in 1000ms at speed 150, this is 20.0
-const float CM_PER_SECOND = 20.0;
-const float DEGREES_PER_SECOND = 180.0;
-
-void moveForwardCM(float cm) {
-  unsigned long delayTime = (cm / CM_PER_SECOND) * 1000;
-  myRobot.forward();
-  delay(delayTime);
-  myRobot.stop();
-}
-
-void moveBackwardCM(float cm) {
-  unsigned long delayTime = (cm / CM_PER_SECOND) * 1000;
-  myRobot.backward();
-  delay(delayTime);
-  myRobot.stop();
-}
-
-void turnLeftDegrees(float degrees) {
-  unsigned long delayTime = (degrees / DEGREES_PER_SECOND) * 1000;
-  myRobot.turnLeft();
-  delay(delayTime);
-  myRobot.stop();
-}
-
-void turnRightDegrees(float degrees) {
-  unsigned long delayTime = (degrees / DEGREES_PER_SECOND) * 1000;
-  myRobot.turnRight();
-  delay(delayTime);
-  myRobot.stop();
-}
+// HC-05 Bluetooth Config
+#define BT_SERIAL Serial1 // MEGA Hardware Serial 1 (TX1: Pin 18, RX1: Pin 19)
 
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(9600);     // For PC Serial Monitor Debugging
+  BT_SERIAL.begin(9600);  // For HC-05 Bluetooth Module
   
   myRobot.setIndividualSpeeds(150, 150, 150, 150);
   myRobot.setStrafeSpeed(150);
-  //myRobot.setIndividualSpeeds(int fl, int fr, int rl, int rr)
   myRobot.setTrim(0.95, 1.0, 1.0, 1.0);
+  
   myForklift.begin();
   myClamp.begin();
-  myMazeSolver.begin();
-  myMazeSolver.setIndividualThreshold(15, 25, 25, 15);
- 
   
+  Serial.println("Bluetooth Remote Control Robot Initialized.");
+  Serial.println("Listening for commands on HC-05 (Serial1)...");
+  
+  // NOTE: MazeSolver logic is completely omitted in this Bluetooth branch.
 }
 
 void loop() {
-  // 1. Check for objects to grab using ultrasonic sensor
-  if (myClamp.isObjectPresent(10)) { // 10cm threshold
-    myRobot.stop();
-    myClamp.close();
-    delay(500);
-    myForklift.moveUp();
-    delay(1000);
-    myForklift.stop();
-  } 
-  // 2. Otherwise, manual movement
-  else {
-
-    // ---- MANUAL MOVEMENT COMMANDS ----
-    // Adjust cm values as needed. Example: move forward 10 cm
-    moveForwardCM(10.0);
-    delay(2000); // pause
+  // Check if a command has been received from Bluetooth
+  if (BT_SERIAL.available() > 0) {
+    char cmd = BT_SERIAL.read();
     
-    // NOTE: To switch back to maze solving, comment out the manual 
-    // movement lines above, and uncomment the line below. Do not remove maze solver code!
-    // myMazeSolver.solveMaze();
+    // Echo back to Serial monitor for debugging
+    Serial.print("Received Command: ");
+    Serial.println(cmd);
+    
+    switch (cmd) {
+      // --- MECANUM MOVEMENT ---
+      case 'F': myRobot.forward();     break; // Forward
+      case 'B': myRobot.backward();    break; // Backward
+      case 'L': myRobot.turnLeft();    break; // Turn Left
+      case 'R': myRobot.turnRight();   break; // Turn Right
+      case 'Q': myRobot.strafeLeft();  break; // Strafe Left
+      case 'E': myRobot.strafeRight(); break; // Strafe Right
+      case 'S': myRobot.stop();        break; // Stop Movement
+      
+      // --- FORKLIFT CONTROL ---
+      case 'U': myForklift.moveUp();   break; // Forklift Up
+      case 'D': myForklift.moveDown(); break; // Forklift Down
+      case 'u': // Lowercase to stop both directions
+      case 'd': myForklift.stop();     break; // Stop Forklift
+      
+      // --- CLAMP CONTROL ---
+      case 'O': myClamp.open();        break; // Open Clamp
+      case 'C': myClamp.close();       break; // Close Clamp
+    }
   }
-  
-
-
 }
