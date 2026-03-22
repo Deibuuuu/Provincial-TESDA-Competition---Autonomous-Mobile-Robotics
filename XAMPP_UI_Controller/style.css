@@ -1,0 +1,181 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Play:wght@400;700&display=swap');
+
+:root {
+  --bg-color: #0d1117;
+  --panel-bg: rgba(255, 255, 255, 0.05);
+  --panel-border: rgba(255, 255, 255, 0.1);
+  --accent-cyan: #00f0ff;
+  --accent-purple: #8a2be2;
+  --accent-red: #ff3366;
+  --text-main: #e6edf3;
+  --text-dim: #8b949e;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-main);
+  font-family: 'Play', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  background: radial-gradient(circle at top right, rgba(0, 240, 255, 0.1), transparent 40%),
+              radial-gradient(circle at bottom left, rgba(138, 43, 226, 0.1), transparent 40%);
+}
+
+.dashboard {
+  width: 100%;
+  max-width: 900px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--panel-border);
+}
+
+.header h1 {
+  font-family: 'Orbitron', sans-serif;
+  background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.9rem;
+  color: var(--text-dim);
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+}
+.dot.offline { background-color: var(--accent-red); box-shadow: 0 0 10px var(--accent-red); }
+.dot.online { background-color: #00ff00; box-shadow: 0 0 10px #00ff00; }
+
+.main-controls {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.glass-panel {
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  backdrop-filter: blur(10px);
+  border-radius: 15px;
+  padding: 25px;
+  flex: 1;
+  min-width: 300px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.glass-panel h2 {
+  font-family: 'Orbitron', sans-serif;
+  margin-bottom: 20px;
+  font-size: 1.2rem;
+  color: var(--text-main);
+  text-align: center;
+  letter-spacing: 1px;
+}
+
+.dpad {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.dpad-middle {
+  display: flex;
+  gap: 10px;
+}
+
+.btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: var(--text-main);
+  cursor: pointer;
+  border-radius: 12px;
+  font-family: 'Play', sans-serif;
+  font-weight: bold;
+  transition: all 0.2s ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.control-btn {
+  width: 70px;
+  height: 70px;
+  font-size: 1.5rem;
+}
+
+.btn:active, .btn.active {
+  transform: scale(0.95);
+  background: rgba(255, 255, 255, 0.15);
+  border-color: var(--accent-cyan);
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.5);
+}
+
+.action-btn {
+  flex: 1;
+  padding: 15px;
+  font-size: 1.1rem;
+  text-transform: uppercase;
+}
+.btn-group { display: flex; gap: 10px; width: 100%; }
+.mt-4 { margin-top: 20px; }
+.actuator-group h3 { font-size: 1rem; color: var(--text-dim); margin-bottom: 10px; text-align: center; }
+
+/* Custom Colors */
+.bg-red:active, .bg-red.active { border-color: var(--accent-red); box-shadow: 0 0 15px rgba(255, 51, 102, 0.5); }
+.bg-cyan:active, .bg-cyan.active { border-color: var(--accent-cyan); box-shadow: 0 0 15px rgba(0, 240, 255, 0.5); }
+.bg-purple:active, .bg-purple.active { border-color: var(--accent-purple); box-shadow: 0 0 15px rgba(138, 43, 226, 0.5); }
+
+.config-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.input-group {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+.styled-input {
+  background: rgba(0,0,0,0.3);
+  border: 1px solid var(--panel-border);
+  color: var(--accent-cyan);
+  padding: 10px;
+  border-radius: 8px;
+  font-family: 'Orbitron', monospace;
+  font-size: 1rem;
+  text-align: center;
+  width: 120px;
+}
+.styled-input:focus { outline: none; border-color: var(--accent-cyan); }
+.primary-btn { padding: 10px 20px; font-size: 1rem; }
+.help-text { margin-top: 15px; font-size: 0.85rem; color: var(--text-dim); text-align: center; }
